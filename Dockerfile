@@ -1,8 +1,7 @@
 # openhab image 
-FROM multiarch/ubuntu-debootstrap:amd64-wily
-#FROM multiarch/ubuntu-debootstrap:armhf-wily   # arch=armhf
-#FROM multiarch/ubuntu-debootstrap:arm64-wily   # arch=arm64
-ARG ARCH=amd64
+FROM jsurf/rpi-java:latest
+
+RUN [ "cross-build-start" ]
 
 ARG DOWNLOAD_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip"
 ENV APPDIR="/openhab" OPENHAB_HTTP_PORT='8080' OPENHAB_HTTPS_PORT='8443' EXTRA_JAVA_OPTS=''
@@ -16,16 +15,6 @@ RUN \
       unzip \
       wget \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Oracle Java
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install --no-install-recommends -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Add openhab user
 RUN adduser --disabled-password --gecos '' --home ${APPDIR} openhab &&\
@@ -54,3 +43,5 @@ USER openhab
 VOLUME ${APPDIR}/conf ${APPDIR}/userdata ${APPDIR}/addons
 EXPOSE 8080 8443 5555
 CMD ["server"]
+
+RUN [ "cross-build-end" ]
