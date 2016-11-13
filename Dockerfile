@@ -24,12 +24,13 @@ RUN adduser --disabled-password --gecos '' --home ${APPDIR} openhab &&\
 
 WORKDIR ${APPDIR}
 
+# Download, Install and Copy directories for host volumes
 RUN \
     wget -nv -O /tmp/openhab.zip ${DOWNLOAD_URL} &&\
     unzip -q /tmp/openhab.zip -d ${APPDIR} &&\
     rm /tmp/openhab.zip &&\
     mkdir -p ${APPDIR}/userdata/logs && touch ${APPDIR}/userdata/logs/openhab.log &&\
-    cp -a /openhab/userdata /openhab/userdata.dist &&\ # Copy directories for host volumes
+    cp -a /openhab/userdata /openhab/userdata.dist &&\ 
     cp -a /openhab/conf /openhab/conf.dist &&\
     chown -R openhab:openhab ${APPDIR}
     
