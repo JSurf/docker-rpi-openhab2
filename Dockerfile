@@ -27,17 +27,14 @@ WORKDIR ${APPDIR}
 RUN \
     wget -nv -O /tmp/openhab.zip ${DOWNLOAD_URL} &&\
     unzip -q /tmp/openhab.zip -d ${APPDIR} &&\
-    rm /tmp/openhab.zip
-
-RUN mkdir -p ${APPDIR}/userdata/logs && touch ${APPDIR}/userdata/logs/openhab.log
-
-# Copy directories for host volumes
-RUN cp -a /openhab/userdata /openhab/userdata.dist && \
-    cp -a /openhab/conf /openhab/conf.dist
+    rm /tmp/openhab.zip &&\
+    mkdir -p ${APPDIR}/userdata/logs && touch ${APPDIR}/userdata/logs/openhab.log &&\
+    cp -a /openhab/userdata /openhab/userdata.dist &&\ # Copy directories for host volumes
+    cp -a /openhab/conf /openhab/conf.dist &&\
+    chown -R openhab:openhab ${APPDIR}
+    
 COPY files/entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
-
-RUN chown -R openhab:openhab ${APPDIR}
 
 RUN [ "cross-build-end" ]
 
