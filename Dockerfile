@@ -11,7 +11,7 @@ ENV \
     APPDIR="/openhab" \
     DEBIAN_FRONTEND=noninteractive \
     EXTRA_JAVA_OPTS="" \
-    JAVA_HOME='/usr/lib/java-8' \
+    JAVA_HOME='/usr/lib/jvm/java-8-oracle' \
     OPENHAB_HTTP_PORT="8080" \
     OPENHAB_HTTPS_PORT="8443"
 
