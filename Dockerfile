@@ -3,8 +3,8 @@ FROM jsurf/rpi-java:latest
 
 RUN [ "cross-build-start" ]
 
-ENV OPENHAB_URL="https://bintray.com/openhab/mvn/download_file?file_path=org%2Fopenhab%2Fdistro%2Fopenhab%2F2.1.0%2Fopenhab-2.1.0.zip"
-ENV OPENHAB_VERSION="2.1.0"
+ENV OPENHAB_URL="https://bintray.com/openhab/mvn/download_file?file_path=org%2Fopenhab%2Fdistro%2Fopenhab%2F2.2.0%2Fopenhab-2.2.0.zip"
+ENV OPENHAB_VERSION="2.2.0"
 
 # Set variables
 ENV \
