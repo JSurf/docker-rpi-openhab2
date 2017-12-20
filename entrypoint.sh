@@ -25,32 +25,34 @@ if ! id -u openhab >/dev/null 2>&1; then
 fi
 
 # Copy initial files to host volume
-case ${OPENHAB_VERSION} in
-  1.8.3)
-      if [ -z "$(ls -A "${APPDIR}/configurations")" ]; then
-        # Copy userdata dir for version 1.8.3
-        echo "No configuration found... initializing."
-        cp -av "${APPDIR}/configurations.dist/." "${APPDIR}/configurations/"
-      fi
-    ;;
-  2.0.0|2.1.0-snapshot)
-      # Initialize empty host volumes
-      if [ -z "$(ls -A "${APPDIR}/userdata")" ]; then
-        # Copy userdata dir for version 2.0.0
-        echo "No userdata found... initializing."
-        cp -av "${APPDIR}/userdata.dist/." "${APPDIR}/userdata/"
-      fi
+# Initialize empty host volumes
+if [ -z "$(ls -A "${APPDIR}/userdata")" ]; then
+   # Copy userdata dir for version 2.0.0
+   echo "No userdata found... initializing."
+   cp -av "${APPDIR}/userdata.dist/." "${APPDIR}/userdata/"
+fi
 
-      if [ -z "$(ls -A "${APPDIR}/conf")" ]; then
-        # Copy userdata dir for version 2.0.0
-        echo "No configuration found... initializing."
-        cp -av "${APPDIR}/conf.dist/." "${APPDIR}/conf/"
-      fi
-    ;;
-  *)
-      echo openHAB version ${OPENHAB_VERSION} not supported!
-    ;;
-esac
+if [ -z "$(ls -A "${APPDIR}/conf")" ]; then
+   # Copy userdata dir for version 2.0.0
+   echo "No configuration found... initializing."
+   cp -av "${APPDIR}/conf.dist/." "${APPDIR}/conf/"
+fi
+
+diff ${APPDIR}/userdata.dist/etc/version.properties ${APPDIR}/userdata/etc/version.properties > /dev/null 2>&1
+result=$?
+if [ $result -eq 1 ]
+then
+   echo "version.properties differ"
+   echo "Upgrade to version ${OPENHAB_VERSION}, replacing system config in /${APPDIR}/userdata/etc"
+   mkdir -p ${APPDIR}/userdata/etc.bak
+   cp -av "${APPDIR}/userdata/etc/." "${APPDIR}/userdata/etc.bak/"
+   cp -av "${APPDIR}/userdata.dist/etc/." "${APPDIR}/userdata/etc/"
+   echo "Clearing cache..."
+   rm -rf "${APPDIR}/userdata/cache"
+   rm -rf "${APPDIR}/userdata/tmp"
+else 
+   echo "version.properties not changed, no upgrade needed"
+fi
 
 # Set openhab folder permission
 chown -R openhab:openhab ${APPDIR}
