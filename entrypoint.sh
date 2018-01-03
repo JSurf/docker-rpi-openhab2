@@ -38,8 +38,10 @@ if [ -z "$(ls -A "${APPDIR}/conf")" ]; then
    cp -av "${APPDIR}/conf.dist/." "${APPDIR}/conf/"
 fi
 
+set +e
 diff ${APPDIR}/userdata.dist/etc/version.properties ${APPDIR}/userdata/etc/version.properties > /dev/null 2>&1
 result=$?
+set -e
 if [ $result -eq 1 ]
 then
    echo "version.properties differ"
